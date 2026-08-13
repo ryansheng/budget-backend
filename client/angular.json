@@ -4,6 +4,10 @@
   "cli": {
     "packageManager": "npm",
     "analytics": false
+<<<<<<< HEAD
+=======
+
+>>>>>>> a799264 (update angular.json)
   },
   "newProjectRoot": "projects",
   "projects": {
