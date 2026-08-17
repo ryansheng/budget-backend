@@ -81,7 +81,25 @@ async function deleteAccount(req: Request, res: Response) {
   }
 }
 
+async function getAccountsByUserId(req: Request, res: Response) {
+  try {
+    const raw = req.params.userId;
+    const userId = Array.isArray(raw) ? raw[0] : raw;
+
+    const accounts = await prisma.account.findMany({
+      where: { userId },
+      orderBy: { id: 'asc' }
+    });
+
+    res.json(accounts);
+  } catch (err) {
+    console.error('Error fetching user accounts:', err);
+    res.status(500).json({ error: 'Failed to fetch user accounts' });
+  }
+}
+
 export {
+  getAccountsByUserId,
   getAccounts,
   getAccountById,
   createAccount,
