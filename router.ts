@@ -12,7 +12,8 @@ import {
   getAccountById,
   createAccount,
   updateAccount,
-  deleteAccount
+  deleteAccount,
+  getAccountsByUserId
 } from "./controller/account";
 
 
@@ -22,7 +23,8 @@ import {
   createTransaction,
   updateTransaction,
   deleteTransaction,
-  getTransactionByUserId
+  getTransactionByUserId,
+  getTransactionByAccountId
 } from "./controller/transaction";
 
 
@@ -44,7 +46,7 @@ router.post("/accounts", (req: Request, res: Response) => createAccount(req, res
 router.put("/accounts/:id", (req: Request, res: Response) => updateAccount(req, res));
 router.delete("/accounts/:id", (req: Request, res: Response) => deleteAccount(req, res));
 
-
+router.get('/accounts/user/:userId', getAccountsByUserId)
 
 router.get('/transactions', getTransactions)
 router.get('/transactions/:id', getTransactionById)
@@ -52,5 +54,6 @@ router.post('/transactions', createTransaction)
 router.put('/transactions/:id', updateTransaction)
 router.delete('/transactions/:id', deleteTransaction)
 router.get('/transactions/user/:user_id', getTransactionByUserId)
+router.get('/transactions/account/:accountId', getTransactionByAccountId)
 
 export default router;

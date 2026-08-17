@@ -125,7 +125,30 @@ async function getTransactionByUserId(req: Request, res: Response):Promise<void>
     res.status(500).json({ error:'failed to fetch user transactions by id'})
   }
 }
+
+async function getTransactionByAccountId(req: Request, res: Response) {
+ try {
+   const raw = req.params.accountId;
+    const accountId = Array.isArray(raw) ? raw[0] : raw; 
+
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        OR: [
+          { senderId: accountId },
+          { recipientId: accountId }
+        ]
+      },
+      orderBy: { date: 'desc' }
+    });
+
+    res.json(transactions);
+  } catch (err) {
+    console.error('Error fetching account transactions:', err);
+    res.status(500).json({ error: 'Failed to fetch account transactions' });
+  }
+}
 export {
+  getTransactionByAccountId,
   getTransactions,
   getTransactionById,
   createTransaction,
