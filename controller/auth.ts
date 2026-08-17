@@ -10,12 +10,6 @@ const createToken = (id: string) => {
   return jwt.sign({ id }, JWT_SECRET, { expiresIn: max });
 };
 
-declare module "express" {
-  export interface Request {
-    userId?: string;
-  }
-}
-
 async function signUp(req: Request, res: Response) {
   try {
     const { email, password, firstName, lastname, currency } = req.body;
@@ -92,7 +86,7 @@ async function requireAuth(req: Request, res: Response, next: NextFunction) {
       return res.status(401).json({ message: "invalid token" });
     }
 
-    req.userId = decoded.id;
+    (req as any).userId = decoded.id;
     next();
   });
 }
