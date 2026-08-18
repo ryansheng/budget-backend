@@ -28,19 +28,32 @@ async function getTransactionById(req: Request, res: Response) {
 async function createTransaction(req: Request, res: Response) {
   try {
     const {
-      categories, senderId, recipientId, amount, date, regular, frequency, start } = req.body 
-    const transaction: Transaction = await prisma.transaction.create({
+      categories, senderId:senderUserId,recipientId:recipientUserId , amount, date, regular, frequency, start } = req.body 
+    
+    const senderAccount = await prisma.account.findFirst({
+      where: { userId: senderUserId }
+    });
+    if (!senderAccount) {
+      return res.status(404).json({ error: "Sender account not found" });
+    }
+    const recipientAccount = await prisma.account.findFirst({
+      where: { userId: recipientUserId }
+    });
+    if (!recipientAccount) {
+      return res.status(404).json({ error: "Recipient account not found" });
+    }
+     const transaction = await prisma.transaction.create({
       data: {
         categories,
-        senderId,
-        recipientId,
+        senderId: senderAccount.id,       
+        recipientId: recipientAccount.id, 
         amount,
         date,
         regular,
         frequency,
         start
       }
-    })
+    });
     res.json(transaction)
     
   } catch (err) {
@@ -54,8 +67,8 @@ async function updateTransaction(req: Request, res: Response) {
   try {
     const {
       categories,
-      senderId,
-      recipientId,
+      senderId: senderUserId,
+      recipientId: recipientUserId,
       amount,
       date,
       regular,
@@ -63,12 +76,31 @@ async function updateTransaction(req: Request, res: Response) {
       start
     } = req.body;
 
-    const transaction: Transaction = await prisma.transaction.update({
+    // 1. Find sender's account
+    const senderAccount = await prisma.account.findFirst({
+      where: { userId: senderUserId }
+    });
+
+    if (!senderAccount) {
+      return res.status(404).json({ error: "Sender account not found" });
+    }
+
+    // 2. Find recipient's account
+    const recipientAccount = await prisma.account.findFirst({
+      where: { userId: recipientUserId }
+    });
+
+    if (!recipientAccount) {
+      return res.status(404).json({ error: "Recipient account not found" });
+    }
+
+   
+    const transaction = await prisma.transaction.update({
       where: { id: req.params.id as string },
       data: {
         categories,
-        senderId,
-        recipientId,
+        senderId: senderAccount.id,       
+        recipientId: recipientAccount.id, 
         amount,
         date,
         regular,
@@ -78,6 +110,7 @@ async function updateTransaction(req: Request, res: Response) {
     });
 
     res.json(transaction);
+
   } catch (err) {
     console.error("updating transaction error:", err);
 
@@ -93,6 +126,7 @@ async function updateTransaction(req: Request, res: Response) {
     res.status(500).json({ error: "failed to update transaction" });
   }
 }
+
 
 async function deleteTransaction(req: Request, res: Response) {
   try {

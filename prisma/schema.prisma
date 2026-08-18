@@ -3,12 +3,13 @@
 
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
+  
+}
+
+generator client {
+  provider = "prisma-client-js"
 }
 
 model User {
@@ -20,8 +21,7 @@ model User {
   createdAt DateTime      @default(now())
   currency  String?
   accounts  Account[]
-  sent      Transaction[] @relation("SentTransactions")
-  received  Transaction[] @relation("ReceivedTransactions")
+ 
 }
 
 model Account {
@@ -32,6 +32,9 @@ model Account {
   balance     Float
 
   user User @relation(fields: [userId], references: [id])
+
+  sentTransactions     Transaction[] @relation("SentTransactions")
+  receivedTransactions Transaction[] @relation("ReceivedTransactions")
 }
 
 model Transaction {
@@ -45,6 +48,6 @@ model Transaction {
   frequency   String
   start       DateTime
 
-  sender    User @relation("SentTransactions", fields: [senderId], references: [id])
-  recipient User @relation("ReceivedTransactions", fields: [recipientId], references: [id])
+  sender    Account @relation("SentTransactions", fields: [senderId], references: [id])
+  recipient Account @relation("ReceivedTransactions", fields: [recipientId], references: [id])
 }

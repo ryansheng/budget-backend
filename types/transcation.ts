@@ -8,4 +8,6 @@ export interface Transaction {
   regular: boolean;
   frequency: string;
   start: Date;
+
+  
 }
