@@ -25,30 +25,7 @@ async function getTransactionById(req: Request, res: Response) {
   }
 }
 
-async function createTransaction(req: Request, res: Response) {
-  try {
-    const {
-      categories, senderId, recipientId, amount, date, regular, frequency, start } = req.body 
-    const transaction: Transaction = await prisma.transaction.create({
-      data: {
-        categories,
-        senderId,
-        recipientId,
-        amount,
-        date,
-        regular,
-        frequency,
-        start
-      }
-    })
-    res.json(transaction)
-    
-  } catch (err) {
-    console.error("error creating transaction:", err);
-    res.status(500).json({ error: "failed to create transaction" });
-    }
-}
-  
+
 
 async function updateTransaction(req: Request, res: Response) {
   try {
