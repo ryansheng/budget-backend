@@ -1,3 +1,14 @@
+import { execSync } from "child_process";
+
+try {
+  const branch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
+  console.log("🚀 Server running on branch:", branch);
+} catch (err) {
+  console.log("⚠️ Could not determine git branch");
+}
+
+
+
 import express, { Request, Response } from "express";
 import cors from "cors";
 import router from "./router";

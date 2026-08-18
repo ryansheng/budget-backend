@@ -28,47 +28,9 @@ async function getTransactionById(req: Request, res: Response) {
 async function createTransaction(req: Request, res: Response) {
   try {
     const {
-      categories, senderId:senderUserId,recipientId:recipientUserId , amount, date, regular, frequency, start } = req.body 
-    
-    const senderAccount = await prisma.account.findFirst({
-      where: { userId: senderUserId }
-    });
-    if (!senderAccount) {
-      return res.status(404).json({ error: "Sender account not found" });
-    }
-    const recipientAccount = await prisma.account.findFirst({
-      where: { userId: recipientUserId }
-    });
-    if (!recipientAccount) {
-      return res.status(404).json({ error: "Recipient account not found" });
-    }
-     const transaction = await prisma.transaction.create({
-      data: {
-        categories,
-        senderId: senderAccount.id,       
-        recipientId: recipientAccount.id, 
-        amount,
-        date,
-        regular,
-        frequency,
-        start
-      }
-    });
-    res.json(transaction)
-    
-  } catch (err) {
-    console.error("error creating transaction:", err);
-    res.status(500).json({ error: "failed to create transaction" });
-    }
-}
-  
-
-async function updateTransaction(req: Request, res: Response) {
-  try {
-    const {
       categories,
-      senderId: senderUserId,
-      recipientId: recipientUserId,
+      senderId,        // now accountId
+      recipientId,     // now accountId
       amount,
       date,
       regular,
@@ -76,31 +38,85 @@ async function updateTransaction(req: Request, res: Response) {
       start
     } = req.body;
 
-    // 1. Find sender's account
-    const senderAccount = await prisma.account.findFirst({
-      where: { userId: senderUserId }
+    // 1. Look up sender account by ACCOUNT ID
+    const senderAccount = await prisma.account.findUnique({
+      where: { id: senderId }
     });
 
     if (!senderAccount) {
       return res.status(404).json({ error: "Sender account not found" });
     }
 
-    // 2. Find recipient's account
-    const recipientAccount = await prisma.account.findFirst({
-      where: { userId: recipientUserId }
+    // 2. Look up recipient account by ACCOUNT ID
+    const recipientAccount = await prisma.account.findUnique({
+      where: { id: recipientId }
     });
 
     if (!recipientAccount) {
       return res.status(404).json({ error: "Recipient account not found" });
     }
 
-   
+    // 3. Create transaction using account IDs
+    const transaction = await prisma.transaction.create({
+      data: {
+        categories,
+        senderId,
+        recipientId,
+        amount,
+        date,
+        regular,
+        frequency,
+        start
+      }
+    });
+
+    res.json(transaction);
+
+  } catch (err) {
+    console.error("error creating transaction:", JSON.stringify(err, null, 2));
+    res.status(500).json({ error: "failed to create transaction" });
+  }
+}
+
+
+  
+
+
+async function updateTransaction(req: Request, res: Response) {
+  try {
+    const {
+      categories,
+      senderId,        // now accountId
+      recipientId,     // now accountId
+      amount,
+      date,
+      regular,
+      frequency,
+      start
+    } = req.body;
+
+    const senderAccount = await prisma.account.findUnique({
+      where: { id: senderId }
+    });
+
+    if (!senderAccount) {
+      return res.status(404).json({ error: "Sender account not found" });
+    }
+
+    const recipientAccount = await prisma.account.findUnique({
+      where: { id: recipientId }
+    });
+
+    if (!recipientAccount) {
+      return res.status(404).json({ error: "Recipient account not found" });
+    }
+
     const transaction = await prisma.transaction.update({
       where: { id: req.params.id as string },
       data: {
         categories,
-        senderId: senderAccount.id,       
-        recipientId: recipientAccount.id, 
+        senderId,
+        recipientId,
         amount,
         date,
         regular,
@@ -139,26 +155,39 @@ async function deleteTransaction(req: Request, res: Response) {
     res.status(500).json({ error: "failed to delete transaction" });
   }
 }
-async function getTransactionByUserId(req: Request, res: Response):Promise<void> {
-  try {
-    const user_id = Array.isArray(req.params.user_id)
-      ? req.params.user_id[0]
-      : req.params.user_id; 
 
+async function getTransactionByUserId(req: Request, res: Response){
+  try {
+    const raw = req.params.user_id;
+    const userId = Array.isArray(raw) ? raw[0] : raw;
+
+   
+    const account = await prisma.account.findFirst({
+      where: { userId }
+    });
+
+    if (!account) {
+      return res.status(404).json({ error: "Account for user not found" });
+    }
+
+    
     const transactions = await prisma.transaction.findMany({
       where: {
         OR: [
-          { senderId: user_id },
-          { recipientId: user_id }
+          { senderId: account.id },
+          { recipientId: account.id }
         ]
       }
-    })
-    res.json(transactions)
+    });
+
+    res.json(transactions);
+
   } catch (err) {
-    console.error('getTransactionbyUserId failed', err)
-    res.status(500).json({ error:'failed to fetch user transactions by id'})
+    console.error("getTransactionByUserId failed", err);
+    res.status(500).json({ error: "failed to fetch user transactions by id" });
   }
 }
+
 
 async function getTransactionByAccountId(req: Request, res: Response) {
  try {
