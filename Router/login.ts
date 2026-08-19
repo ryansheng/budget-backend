@@ -1,30 +1,32 @@
-import { Router, Request, Response } from 'express'
-import { User } from '../types/user'
-import { signUp, loginUser, loginCheck, requireAuth} from '../controller/auth'
-
-
+import { Router, Request, Response } from "express";
+import { signUp, loginCheck, requireAuth, getMe } from "../controller/auth";
 
 const loginRouter = Router();
 
-loginRouter.get('/', (req: Request, res: Response) => {
-  res.json({message: 'Reached Login maybe'})
-})
+
+loginRouter.get("/", (req: Request, res: Response) => {
+  res.json({ message: "Reached Login maybe" });
+});
 
 
-loginRouter.post('/signup', signUp)
-loginRouter.post('/login', loginCheck)
-loginRouter.get('/me', requireAuth, async (req: Request, res: Response) => {
-  res.json({message:'you have successfully authenicated'})
-})
-loginRouter.post('/logout', (req: Request, res: Response) => {
-   res.clearCookie('jwt', {
+loginRouter.post("/signup", signUp);
+
+
+loginRouter.post("/login", loginCheck);
+
+
+loginRouter.get("/me", requireAuth, getMe);
+
+
+loginRouter.post("/logout", (req: Request, res: Response) => {
+  res.clearCookie("jwt", {
     httpOnly: true,
-    secure: false,
-    sameSite: 'lax',
-    path: '/'
-  })
-  
-  res.json({message:'mogged out successfully'})
-})
+    secure: true,       // REQUIRED for Render HTTPS
+    sameSite: "none",   // REQUIRED for Angular cross-site cookies
+    path: "/"
+  });
 
-export default loginRouter
+  res.json({ message: "logged out successfully" });
+});
+
+export default loginRouter;

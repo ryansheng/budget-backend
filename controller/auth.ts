@@ -3,25 +3,35 @@ import { prisma } from "../prismaClient";
 import jwt from "jsonwebtoken";
 import { User } from "../types/user";
 
-const max = 24 * 60 * 60;
+const max = 24 * 60 * 60; 
 const JWT_SECRET = "budget_secret";
 
 const createToken = (id: string) => {
   return jwt.sign({ id }, JWT_SECRET, { expiresIn: max });
 };
 
-async function signUp(req: Request, res: Response) {
+
+export async function signUp(req: Request, res: Response) {
   try {
     const { email, password, firstName, lastname, currency } = req.body;
 
-    const user: User = await prisma.user.create({
+    const user = await prisma.user.create({
       data: { email, password, firstName, lastname, currency }
     });
 
     const token = createToken(user.id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: max * 1000 });
 
-    res.status(201).json(user);
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: true,       
+      sameSite: "none",   
+      maxAge: max * 1000
+    });
+
+    res.status(201).json({
+      message: "signup successful",
+      user
+    });
   } catch (err: any) {
     if (err.code === "P2002") {
       return res.status(400).json({ message: "Email already exists" });
@@ -30,30 +40,12 @@ async function signUp(req: Request, res: Response) {
   }
 }
 
-async function loginUser(req: Request, res: Response) {
-  try {
-    const raw = req.params.id;
-    const id = Array.isArray(raw) ? raw[0] : raw;
 
-    const user: User | null = await prisma.user.findUnique({
-      where: { id }
-    });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found — please sign up" });
-    }
-
-    res.json(user);
-  } catch {
-    res.status(500).json({ message: "server error" });
-  }
-}
-
-async function loginCheck(req: Request, res: Response) {
+export async function loginCheck(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
 
-    const user: User | null = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email }
     });
 
@@ -66,15 +58,25 @@ async function loginCheck(req: Request, res: Response) {
     }
 
     const token = createToken(user.id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: max * 1000 });
 
-    res.json({ message: "login successful", user });
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: max * 1000
+    });
+
+    res.json({
+      message: "login successful",
+      user
+    });
   } catch {
     res.status(500).json({ message: "could not log in user" });
   }
 }
 
-async function requireAuth(req: Request, res: Response, next: NextFunction) {
+
+export async function requireAuth(req: Request, res: Response, next: NextFunction) {
   const token = req.cookies.jwt;
 
   if (!token) {
@@ -91,4 +93,21 @@ async function requireAuth(req: Request, res: Response, next: NextFunction) {
   });
 }
 
-export { signUp, loginUser, loginCheck, requireAuth };
+
+export async function getMe(req: Request, res: Response) {
+  try {
+    const userId = (req as any).userId;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    res.json({ user });
+  } catch {
+    res.status(500).json({ message: "could not fetch user" });
+  }
+}
