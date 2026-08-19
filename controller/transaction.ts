@@ -124,6 +124,10 @@ async function getTransactionByAccountId(req: Request, res: Response) {
     res.status(500).json({ error: 'Failed to fetch account transactions' });
   }
 }
+
+async function createTransaction(req: Request, res: Response) {
+  res.json({message:'placeholder'})
+}
 export {
   getTransactionByAccountId,
   getTransactions,

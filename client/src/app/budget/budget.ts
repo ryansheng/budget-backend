@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-
+import { Layout } from './layout';
 @Component({
   selector: 'app-budget',
-  imports: [],
+  imports: [Layout],
   templateUrl: './budget.html',
   styleUrl: './budget.css',
 })
