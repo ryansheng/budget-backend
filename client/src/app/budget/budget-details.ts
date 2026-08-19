@@ -34,8 +34,7 @@ import { TabGroup } from "./tabs/tab-group";
       min-height:1000px; 
       max-height: 1400px;
        width: auto;
-     // background-color:#F5F2E8;
-      // border: 2px solid black;
+    
       width: 100%;
       color: black;
     }

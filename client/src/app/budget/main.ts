@@ -14,7 +14,7 @@ import { BudgetDetails } from "./budget-details";
     .hero-container {
       margin:75px;
       padding:25px;
-      // border: 1px solid red;
+      
       display: block;
       z-index: 9;
     }
