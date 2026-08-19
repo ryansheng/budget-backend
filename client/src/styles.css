@@ -16,6 +16,8 @@ body {
   --tertiary: rgb(133, 195, 117);
   --incoming-glow: green;
   --outgoing-glow: red;
+  --upcoming-incoming-glow: #B7FF00;
+  --upcoming-outgoing-glow: #FF8C00;
 /*Light Mode*/
   --nav-bar: white;
   --primary: white;
@@ -34,6 +36,8 @@ body {
 .colourblind-mode {
   --incoming-glow: #009E73;
   --outgoing-glow: #0072B2;
+  --upcoming-incoming-glow: #E69F00;
+  --upcoming-outgoing-glow: #CC79A7;
   --secondary: #0072B2;
   --tertiary: #56B4E9;
 }
