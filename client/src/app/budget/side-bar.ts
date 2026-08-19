@@ -5,28 +5,21 @@ import {MatIconModule} from '@angular/material/icon';
   imports:[MatIconModule],
   template: `
   <div class="icon-container">
-
-    <mat-icon style="font-size: 78px; height: 78px; width: 78px; color:black">
-      balance 
-    </mat-icon>
+   <mat-icon style="font-size: 58px; height: 68px; width: 78px; color:black">
+  eco
+</mat-icon> 
     <span>Dashboard</span>
   </div>
 <div class="icon-container">
-<mat-icon style="font-size: 78px; height: 78px; width: 78px; color:black">
+<mat-icon style="font-size: 58px; height: 68px; width: 78px; color:black">
  pie_chart
 </mat-icon>
 <span>Charts</span>
 </div>
 
-<div class="icon-container">
-<mat-icon style="font-size: 78px; height: 78px; width: 78px; color:black">
-  eco
-</mat-icon>
-<span>Goals</span>
-</div>
 
 <div class="icon-container">
-<mat-icon style="font-size: 78px; height: 78px; width: 78px; color:black">
+<mat-icon style="font-size: 58px; height: 68px; width: 78px; color:black">
   monetization_on
 </mat-icon>
 <span>Investments</span>

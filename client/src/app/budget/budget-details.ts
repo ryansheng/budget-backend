@@ -10,16 +10,14 @@ import { TabGroup } from "./tabs/tab-group";
 <budget-tab-group>
 
 
-  <budget-tab label="Overivew">
-    <p>Overivew</p>
-  </budget-tab>
+  
   <budget-tab label="Monthly">
     <p>Monthly Expenses</p>
   </budget-tab>
   <budget-tab label="Yearly">
     <p>Yearly</p>
   </budget-tab>
-  <budget-tab label="Finanicial Health">
+  <budget-tab label="$ Well-Being">
     </budget-tab>
     
   

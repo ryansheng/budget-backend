@@ -6,7 +6,6 @@ import { BudgetDetails } from "./budget-details";
   imports: [BudgetDetails],
   template: `
   <div class="hero-container">
-
     <budget-details/>
   </div>
   `,
@@ -14,7 +13,6 @@ import { BudgetDetails } from "./budget-details";
     .hero-container {
       margin:75px;
       padding:25px;
-      
       display: block;
       z-index: 9;
     }

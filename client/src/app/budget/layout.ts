@@ -44,6 +44,7 @@ export interface Tile {
   styles: [`
     
     .side-bar-menu{
+      padding-top: 150px;
       background-color: rgb(227, 227, 206);
       color:brown;
       height:100%;
@@ -52,9 +53,9 @@ export interface Tile {
       flex-direction: column;
       gap: 200px;
       align-items: center;
-      justify-content: center;
-      font-size: xx-large;
-      padding: 10px;
+      justify-content: flex-start;
+      font-size: x-large;
+      
       
     }
 
@@ -64,7 +65,7 @@ export interface Tile {
        background-color: rgb(227, 227, 206);
        display: block;
        color: brown;
-       font-size: xx-large;
+       font-size: large;
     }
     `]
 })

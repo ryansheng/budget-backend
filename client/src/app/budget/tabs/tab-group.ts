@@ -6,25 +6,55 @@ import { contentChildren } from '@angular/core';
   selector: 'budget-tab-group',
   providers:[TabState],
   template: `
- <div class="border-b border-gray-200 flex gap-4">
-      
-      @for (tab of tabs(); track tab.label()) {
-        <button
-          (click)="activate(tab.label())"
-          class="px-28 py-10 border-b-2 transition-colors font-medium"
-          [class.border-blue-600]="state.activeTab() === tab.label()"
-          [class.text-green-600]="state.activeTab() === tab.label()"
-          [class.border-transparent]="state.activeTab() !== tab.label()"
-        >
-          {{ tab.label() }}
-        </button>
-      }
-    </div>
+<div class="tab-header">
+  @for (tab of tabs(); track tab.label()) {
+    <button
+      (click)="activate(tab.label())"
+      class="tab-button"
+      [class.active]="state.activeTab() === tab.label()"
+    >
+      {{ tab.label() }}
+    </button>
+  }
+</div>
 
-    
-    <ng-content />
+<ng-content />
  
- `
+ 
+ `,
+  styles: [`
+  
+.tab-header {
+  border-bottom: 1px solid #e5e7eb; 
+  display: flex;
+  gap: 1rem; 
+}
+
+
+.tab-button {
+  padding: 10px 28px; 
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-weight: 500; 
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+
+.tab-button.active {
+  border-bottom-color: #16181c; 
+ 
+  color: #187d3d; 
+ 
+}
+
+
+.tab-button:not(.active):hover {
+  color: #555;
+}
+
+  `]
 })
 
 export class TabGroup{

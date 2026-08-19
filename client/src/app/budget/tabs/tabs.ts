@@ -6,11 +6,32 @@ import { TabState } from "./tab-state";
   template: `
   @if (isActive()) {
 
-  <div class="py-20 px-20 animate-in fade-in duration-300">
-        <ng-content />
-      </div>
+ <div class="tab-content">
+  <ng-content />
+</div> 
   }
-  `
+  `,
+  styles: [`
+    .tab-content {
+  padding: 20px 20px;
+  animation: fadeIn 300ms ease-in forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+    
+    
+    `]
 })
 
 export class Tab{
